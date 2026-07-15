@@ -7,3 +7,4 @@ var password   = document.querySelector("#exampleInputPassword");
 var photo      = document.querySelector("#exampleInputFile");
 var admin      = document.querySelector("#exampleInputAdmin");
 
+ 
