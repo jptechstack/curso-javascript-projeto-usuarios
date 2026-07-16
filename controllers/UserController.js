@@ -8,6 +8,7 @@ class UserController {
 
         this.onSubmit();
         this.onEdit();
+        this.selectAll();
 
     }
 
@@ -19,7 +20,7 @@ class UserController {
 
         });
 
-        this.formUpdateEl.addEventListener("submit", e=>{
+        this.formUpdateEl.addEventListener("submit", event=>{
             
             event.preventDefault();
 
@@ -104,6 +105,8 @@ class UserController {
                 (content) => {
                     
                     values.photo = content;
+
+                    this.insert(values);
                         
                     this.addLine(values);
 
@@ -214,6 +217,45 @@ class UserController {
             user.photo, 
             user.admin
         );
+    }
+
+    getUsersStorage() {
+        
+        let users = [];
+
+        if (sessionStorage.getItem("users")) {
+            
+            users = JSON.parse(sessionStorage.getItem("users"));
+        
+        }
+
+        return users;
+    }
+
+    selectAll() {
+        
+        let users = this.getUsersStorage();
+
+        users.forEach(dataUser=>{
+
+            let user = new User();
+
+            user.loadFromJSON(dataUser);
+
+            this.addLine(user);
+
+        });
+
+    }
+
+    insert(data) {
+
+        let users = this.getUsersStorage();
+
+        users.push(data);
+
+        sessionStorage.setItem("users", JSON.stringify(users));
+
     }
 
     addLine(dataUser) {
