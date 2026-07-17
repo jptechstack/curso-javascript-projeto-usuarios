@@ -90,9 +90,19 @@ class User {
 
     getNewId() {
 
-        if (!window.id) window.id = 0;
+        let users = User.getUsersStorage();
 
-        return ++window.id;
+        let maxId = 0;
+
+        users.forEach(user => {
+
+            if (user._id > maxId) {
+                maxId = user._id;
+            }
+
+        });
+
+        return maxId + 1;
 
     }
 
@@ -119,6 +129,23 @@ class User {
             users.push(this);
 
         }
+
+        localStorage.setItem("users", JSON.stringify(users));
+
+    }
+
+    remove() {
+
+        let users = User.getUsersStorage();
+
+        users.forEach((userData, index)=>{
+
+            if (this._id == userData._id) {
+
+                users.splice(index, 1);
+
+            }
+        });
 
         localStorage.setItem("users", JSON.stringify(users));
 

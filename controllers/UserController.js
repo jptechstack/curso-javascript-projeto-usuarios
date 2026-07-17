@@ -24,11 +24,13 @@ class UserController {
             
             event.preventDefault();
 
+            let values = this.getValues(this.formUpdateEl);
+
+            if (!values) return;
+
             let btn = this.formUpdateEl.querySelector("[type=submit]");
 
             btn.disabled = true;
-
-            let values = this.getValues(this.formUpdateEl);
 
             let index = this.formUpdateEl.dataset.trIndex;
 
@@ -82,14 +84,14 @@ class UserController {
             
             event.preventDefault();
 
-            let btn = this.formEl.querySelector("[type=submit]");
-
-            btn.disabled = true;
-
             let values = this.getValues(this.formEl);
 
             if (!values) return false;
 
+            let btn = this.formEl.querySelector("[type=submit]");
+
+            btn.disabled = true;
+            
             this.getPhoto(this.formEl).then(
 
                 (content) => {
@@ -165,11 +167,18 @@ class UserController {
 
         [...formEl.elements].forEach(function(field, index){
 
-            if (['name', 'email', 'password'].indexOf(field.name) > -1 && !field.value) {
+            if (['name', 'email', 'password'].indexOf(field.name) > -1) {
                 
-                field.parentElement.classList.add('has-error');
-                isValid = false;
+                if (!field.value) {
 
+                    field.parentElement.classList.add('has-error');
+                    isValid = false;
+
+                } else {
+
+                    field.parentElement.classList.remove('has-error');
+
+                }
 
             }
 
@@ -209,22 +218,9 @@ class UserController {
         );
     }
 
-    getUsersStorage() {
-        
-        let users = [];
-
-        if (localStorage.getItem("users")) {
-            
-            users = JSON.parse(localStorage.getItem("users"));
-        
-        }
-
-        return users;
-    }
-
     selectAll() {
         
-        let users = this.getUsersStorage();
+        let users = User.getUsersStorage();
 
         users.forEach(dataUser=>{
 
@@ -278,6 +274,12 @@ class UserController {
         tr.querySelector(".btn-delete").addEventListener("click", e=>{
             
             if (confirm("Deseja realmente excluir?")) {
+
+                let user = new User();
+
+                user.loadFromJSON(JSON.parse(tr.dataset.user));
+
+                user.remove();
 
                 tr.remove();
 
